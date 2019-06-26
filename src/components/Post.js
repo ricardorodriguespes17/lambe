@@ -12,7 +12,7 @@ class Post extends Component {
         return (
             <View style={styles.container}>
                 <Author email={this.props.email} name={this.props.name} />
-                <Image source={this.props.image} style={styles.image} />
+                <Image source={{ uri: this.props.image }} style={styles.image} />
                 <Comments comments={this.props.comments} />
                 {addComment}
             </View>

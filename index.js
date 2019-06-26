@@ -13,7 +13,7 @@ axios.defaults.baseURL = 'https://lambe-lambe-ricardo.firebaseio.com/'
 const store = storeConfig()
 const Redux = () => (
     <Provider store={store} >
-        <Navigator />
+        <App />
     </Provider>
 )
 

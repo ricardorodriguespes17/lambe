@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { View, StyleSheet, Text, TextInput, TouchableOpacity } from 'react-native'
+import { View, StyleSheet, Text, TextInput, TouchableOpacity, ActivityIndicator } from 'react-native'
 import Style from '../style/Style'
 import { connect } from 'react-redux'
 import { createUser } from '../store/actions/user'
@@ -13,7 +13,16 @@ class Register extends Component {
         confirmPassword: ''
     }
 
+    componentDidUpdate = (prevProps) => {
+        if (prevProps.isLoading && !this.props.isLoading) {
+            this.setState({ name: '', email: '', password: '', confirmPassword: '' })
+            this.props.navigation.navigate('Profile')
+        }
+    }
+
     render() {
+        loading = this.props.isLoaded ? null : <ActivityIndicator size='large' color='#2965c1' />
+
         return (
             <View style={styles.container}>
                 <TextInput placeholder='Nome'
@@ -38,9 +47,10 @@ class Register extends Component {
                     value={this.state.confirmPassword}
                     style={styles.input} />
                 <TouchableOpacity onPress={() => { this.props.onCreateUser(this.state) }}
-                    style={styles.button}>
+                    style={[styles.button, this.props.isLoaded ? null : styles.buttonDisable]}>
                     <Text style={styles.buttonText}>Criar</Text>
                 </TouchableOpacity>
+                {loading}
             </View>
         )
     }
@@ -50,8 +60,15 @@ const styles = StyleSheet.create({
     container: { ...Style.container },
     input: { ...Style.input },
     button: { ...Style.button },
-    buttonText: { ...Style.buttonText }
+    buttonText: { ...Style.buttonText },
+    buttonDisable: { backgroundColor: '#aaa' }
 })
+
+const mapStateToProps = ({ user }) => {
+    return {
+        isLoaded: user.isLoaded
+    }
+}
 
 const mapDispatchToProps = (dispatch) => {
     return {
@@ -59,4 +76,4 @@ const mapDispatchToProps = (dispatch) => {
     }
 }
 
-export default connect(null, mapDispatchToProps)(Register)
+export default connect(mapStateToProps, mapDispatchToProps)(Register)

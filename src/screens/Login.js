@@ -1,15 +1,22 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { login } from '../store/actions/user'
-import { View, StyleSheet, Text, TextInput, TouchableOpacity } from 'react-native'
+import { View, StyleSheet, Text, TextInput, TouchableOpacity, ActivityIndicator } from 'react-native'
 import Style from '../style/Style'
 
 class Login extends Component {
 
     state = {
-        name: 'Ricardo Rodrigues',
+        name: '',
         email: '',
-        password: ''
+        password: '',
+
+    }
+
+    componentWillMount = () => {
+        if(this.props.user.token){
+            this.props.navigation.navigate('Profile')
+        }
     }
 
     componentDidUpdate = (prevProps) => {
@@ -27,6 +34,8 @@ class Login extends Component {
     }
 
     render() {
+        loading = this.props.isLoaded ? null : <ActivityIndicator size='large' color='#2965c1' />
+
         return (
             <View style={styles.container}>
                 <TextInput placeholder='Email'
@@ -41,14 +50,17 @@ class Login extends Component {
                     autoCapitalize='none'
                     value={this.state.password}
                     onChangeText={(password) => this.setState({ password })} />
-                <TouchableOpacity style={styles.button}
+                <TouchableOpacity style={[styles.button, this.props.isLoaded ? null : styles.buttonDisable]}
+                    disabled={!this.props.isLoaded}
                     onPress={this.login}>
                     <Text style={styles.buttonText}>Entrar</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.button}
+                <TouchableOpacity style={[styles.button, this.props.isLoaded ? null : styles.buttonDisable]}
+                    disabled={!this.props.isLoaded}
                     onPress={this.openRegister} >
                     <Text style={styles.buttonText}>Criar conta</Text>
                 </TouchableOpacity>
+                {loading}
             </View>
         )
     }
@@ -58,12 +70,15 @@ const styles = StyleSheet.create({
     container: { ...Style.container },
     input: { ...Style.input },
     button: { ...Style.button },
-    buttonText: { ...Style.buttonText }
+    buttonText: { ...Style.buttonText },
+    buttonDisable: { backgroundColor: '#aaa' }
 })
 
 const mapStateToProps = ({ user }) => {
     return {
-        isLoading: user.isLoading
+        user,
+        isLoading: user.isLoading,
+        isLoaded: user.isLoaded
     }
 }
 

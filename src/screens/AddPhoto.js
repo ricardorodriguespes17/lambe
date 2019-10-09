@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { addPost } from '../store/actions/posts'
 import {
     View, Text, StyleSheet, TouchableOpacity, Image, TouchableWithoutFeedback,
-    Dimensions, TextInput, Platform, ScrollView, Alert,
+    Dimensions, TextInput, Platform, ScrollView, Alert, ActivityIndicator
 } from 'react-native'
 import ImagePicker from 'react-native-image-picker'
 import Style from '../style/Style'
@@ -57,6 +57,7 @@ class AddPhoto extends Component {
             name: this.props.name,
             email: this.props.email,
             image: this.state.image,
+            likes: [],
             comments: [{
                 name: this.props.name,
                 comment: this.state.comment
@@ -65,18 +66,24 @@ class AddPhoto extends Component {
     }
 
     render() {
+        loading = this.props.isLoaded ? null : <ActivityIndicator size='large' color='#2965c1' />
+
         minimizePhoto = (
             <ScrollView>
                 <View style={styles.container}>
                     <Text style={styles.title}>Compartilhe uma imagem</Text>
                     <View style={styles.imageContainer}>
                         <TouchableWithoutFeedback onPress={() => this.setState({ fullImage: true })}
+                            onLongPress={() => this.setState({ image: null })}
                             style={styles.imageContainer}>
                             <Image source={this.state.image}
                                 style={styles.image} />
                         </TouchableWithoutFeedback>
                     </View>
-                    <TouchableOpacity style={styles.button}
+                    <TouchableOpacity style={
+                        [styles.button, !this.props.isLoaded ? styles.buttonDisable : null]
+                    }
+                        disabled={!this.props.isLoaded}
                         onPress={this.pickImage} >
                         <Text style={styles.buttonText}>
                             Escolha uma foto
@@ -87,13 +94,18 @@ class AddPhoto extends Component {
                         editable={this.props.name != null}
                         onChangeText={(comment) => this.setState({ comment })}
                         value={this.state.comment} />
-                    <TouchableOpacity style={[styles.button, this.props.loading ? styles.buttonDisable : null]}
+                    <TouchableOpacity
+                        style={
+                            [styles.button, this.state.image == null || !this.props.isLoaded
+                                ? styles.buttonDisable : null]
+                        }
                         onPress={this.save}
-                        disabled={this.props.loading} >
+                        disabled={this.state.image == null || !this.props.isLoaded ? true : false} >
                         <Text style={styles.buttonText}>
                             Salvar
                         </Text>
                     </TouchableOpacity>
+                    {loading}
                 </View>
             </ScrollView>
         )
@@ -117,6 +129,7 @@ const styles = StyleSheet.create({
     input: { ...Style.input },
     button: { ...Style.button },
     buttonText: { ...Style.buttonText },
+    buttonDisable: { backgroundColor: '#aaa' },
     fullImage: {
         height: Dimensions.get('window').height,
         width: Dimensions.get('window').width,
@@ -142,16 +155,14 @@ const styles = StyleSheet.create({
         height: '100%',
         resizeMode: 'contain'
     },
-    buttonDisable: {
-        backgroundColor: '#aaa'
-    }
 })
 
 const mapStateToProps = ({ user, posts }) => {
     return {
         email: user.name,
         name: user.name,
-        loading: posts.isUploading
+        loading: posts.isUploading,
+        isLoaded: posts.isLoaded
     }
 }
 

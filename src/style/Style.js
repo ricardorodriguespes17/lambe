@@ -29,5 +29,5 @@ export default {
     buttonText: {
         color: '#eee',
         fontSize: 20
-    }
+    },
 }

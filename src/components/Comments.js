@@ -40,7 +40,6 @@ const styles = StyleSheet.create({
         marginTop: 5
     },
     name: {
-        marginLeft: 5,
         fontWeight: 'bold',
         color: '#444'
     },

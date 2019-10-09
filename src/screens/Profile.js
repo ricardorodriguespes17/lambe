@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { logout } from '../store/actions/user'
-import { View, StyleSheet, Text, TouchableOpacity, Alert } from 'react-native'
+import { View, StyleSheet, Text, TouchableOpacity } from 'react-native'
 import { Gravatar } from 'react-native-gravatar'
 import Style from '../style/Style'
 
@@ -56,14 +56,17 @@ const styles = StyleSheet.create({
         marginTop: 100,
     },
     name: {
-        fontSize: 30,
+        fontSize: 25,
         marginTop: 30,
+        marginHorizontal: 10,
         fontWeight: 'bold',
         color: '#444'
     },
     email: {
-        fontSize: 25,
+        fontSize: 20,
         marginTop: 20,
+        marginHorizontal: 10,
+        alignItems: 'center',
         color: '#999',
     },
 })

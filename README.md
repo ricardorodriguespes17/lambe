@@ -1,2 +1,3 @@
 # lambe
-Projeto clone do Instagram em React Native
+Projeto clone do Instagram
+Desenvolvido com React Native + Firebase
